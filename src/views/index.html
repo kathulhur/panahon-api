@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather Information API</title>
+</head>
+<body>
+  <h1>Weather Information API</h1>
+  <p>Welcome to the Weather Information API!</p>
+  
+  <h2>API Endpoint</h2>
+  <p>The API provides weather information for a given city.</p>
+  
+  <h3>Endpoint:</h3>
+  <pre>GET /api/weather/:city</pre>
+  
+  <h3>Parameters:</h3>
+  <ul>
+    <li><code>:city</code> - The name of the city for which you want to retrieve weather information.</li>
+  </ul>
+  
+  <h3>Example Usage:</h3>
+  <pre>GET /api/weather/london</pre>
+  
+  <h3>Example Response:</h3>
+  <pre>
+  {
+    "data": {
+        "location": {
+            "name": "Manila",
+            "region": "Manila",
+            "country": "Philippines",
+            "localtime": "2023-05-29 0:56"
+        },
+        "current": {
+            "temp_c": 30,
+            "condition": {
+                "text": "Partly cloudy",
+                "icon": "//cdn.weatherapi.com/weather/64x64/night/116.png"
+            }
+        }
+    },
+    "message": "OK",
+    "status": 200
+  }
+  </pre>
+  
+  <p>Please note that the weather information provided is based on third-party API.</p>
+  
+  <p>Feel free to explore the API and retrieve weather information for different cities by making requests to the endpoint mentioned above.</p>
+  
+  <p>If you have any questions or need further assistance, please don't hesitate to reach out. Enjoy using the Weather Information API!</p>
+</body>
+</html>
