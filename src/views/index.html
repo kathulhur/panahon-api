@@ -1,53 +1,183 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <title>Weather Information API</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather API</title>
 </head>
+
 <body>
-  <h1>Weather Information API</h1>
-  <p>Welcome to the Weather Information API!</p>
-  
-  <h2>API Endpoint</h2>
-  <p>The API provides weather information for a given city.</p>
-  
-  <h3>Endpoint:</h3>
-  <pre>GET /api/weather/:city</pre>
-  
-  <h3>Parameters:</h3>
+  <h1>Weather API</h1>
+
+  <p>Simple API for retrieving weather information</p>
+
+  <h2>Table of Contents</h2>
   <ul>
-    <li><code>:city</code> - The name of the city for which you want to retrieve weather information.</li>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#endpoints">Endpoints</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
   </ul>
-  
-  <h3>Example Usage:</h3>
-  <pre>GET /api/weather/london</pre>
-  
-  <h3>Example Response:</h3>
-  <pre>
+
+  <h2 id="getting-started">Getting Started</h2>
+
+  <h3 id="installation">Installation</h3>
+  <p>To get started with the Weather API, clone this repository and install the required dependencies:</p>
+  <pre><code>
+    <strong>git clone https://github.com/kathulhur/panahon-api.git</strong>
+    <strong>cd panahon-api</strong>
+    <strong>npm install</strong>
+  </code></pre>
+
+  <h3 id="usage">Usage</h3>
+  <ol>
+    <li>Rename the <code>.env.example</code> file to <code>.env</code> and provide the necessary environment
+      variables.</li>
+    <li>Run the following command to start the API server:</li>
+  </ol>
+
+  <pre><code>npm start
+  </code></pre>
+
+  <p>By default, the API will be available at <a href="http://localhost:3000">http://localhost:3000</a>.</p>
+
+  <h2 id="endpoints">Endpoints</h2>
+
+  <h3 id="register">Register</h3>
+  <p>Register a new user.</p>
+  <ul>
+    <li><strong>URL</strong>: <code>/api/auth/register</code></li>
+    <li><strong>Method</strong>: <code>POST</code></li>
+    <li><strong>Request Body</strong>:</li>
+  </ul>
+
+  <pre><code>{
+  "name": "exampleuser",
+  "email": "exampleuser@mail.com",
+  "password": "password123"
+}
+  </code></pre>
+
+  <p><strong>Success Response</strong>:</p>
+  <ul>
+    <li><strong>Status Code</strong>: 201 (Created)</li>
+    <li><strong>Response Body</strong>:</li>
+  </ul>
+
+  <pre><code>
   {
-    "data": {
-        "location": {
-            "name": "Manila",
-            "region": "Manila",
-            "country": "Philippines",
-            "localtime": "2023-05-29 0:56"
-        },
-        "current": {
-            "temp_c": 30,
-            "condition": {
-                "text": "Partly cloudy",
-                "icon": "//cdn.weatherapi.com/weather/64x64/night/116.png"
-            }
-        }
-    },
-    "message": "OK",
-    "status": 200
+      "message": "Registration successful",
+      "status": 200,
+      "data": {
+          "name": "exampleuser",
+          "email": "exampleuser@mail.com"
+      }
+   }
+  </code></pre>
+
+  <h3 id="login">Login</h3>
+  <p>Authenticate and obtain a user token.</p>
+  <ul>
+    <li><strong>URL</strong>: <code>/api/auth/login</code></li>
+    <li><strong>Method</strong>: <code>POST</code></li>
+    <li><strong>Request Body</strong>:</li>
+  </ul>
+
+  <pre lan><code>
+  {
+    "email": "exampleuser@mail.com",
+    "password": "password123"
   }
-  </pre>
-  
-  <p>Please note that the weather information provided is based on third-party API.</p>
-  
-  <p>Feel free to explore the API and retrieve weather information for different cities by making requests to the endpoint mentioned above.</p>
-  
-  <p>If you have any questions or need further assistance, please don't hesitate to reach out. Enjoy using the Weather Information API!</p>
+  </code></pre>
+
+  <p><strong>Success Response</strong>:</p>
+  <ul>
+  </ul>
+
+  <pre><code>
+  {
+      "message": "User logged in successfully",
+      "status": 200,
+      "data": {
+          "name": "exampleuser",
+          "email": "exampleuser@mail.com",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIzQG1haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkSnUxeEouL2RwdXY4RXB1QlZjbll3ZXZ6R1Q3VTNRNGR0RVd1MHJ2dGo2Lm9rWlNLd3N6aC4iLCJpYXQiOjE2ODUzNDg1MTcsImV4cCI6MTY4NTM1MjExN30.i9flYxQtPreviCxg_mAaHFAK0Env4MFT2MGyo-TgAVA"
+      }
+  }
+  </code></pre>
+
+  <h3 id="get-weather">Get Weather</h3>
+  <p>Retrieve weather information for a specific city.</p>
+  <ul>
+    <li><strong>URL</strong>: <code>/api/weather/:city</code></li>
+    <li><strong>Method</strong>: <code>GET</code></li>
+    <li><strong>Success Response</strong>:</li>
+  </ul>
+
+  <pre><code>
+    {
+        "data": {
+            "location": {
+                "name": "Manila",
+                "region": "Manila",
+                "country": "Philippines",
+                "localtime": "2023-05-29 16:19"
+            },
+            "current": {
+                "temp_c": 32,
+                "condition": {
+                    "text": "Partly cloudy",
+                    "icon": "//cdn.weatherapi.com/weather/64x64/day/116.png"
+                }
+            }
+        },
+        "message": "OK",
+        "status": 200
+     }
+  </code></pre>
+
+  <h3 id="get-users">User Management [Protected Routes]</h3>
+  <ul>
+    <li>
+      <strong>
+        <code>
+          GET /api/users:
+        </code>
+      </strong> 
+      Retrieves all users (only accessible to admin users).
+    </li>
+    <li>
+      <strong>
+        <code>
+          POST /api/users:
+        </code>
+      </strong> 
+      Creates a new user (only accessible to admin users).
+    </li>
+    <li>
+      <strong>
+        <code>
+          PUT /api/users/:id: 
+        </code>
+      </strong> 
+      Updates user information (only accessible to admin users).
+    </li>
+    <li>
+      <strong>
+        <code>
+          DELETE /api/users/:id:
+        </code>
+      </strong> 
+      Deletes a user (only accessible to admin users).
+    </li>
+  </ul>
+
+  <h2 id="contributing">Contributing</h2>
+  <p>Contributions are welcome! Please read the <code>CONTRIBUTING.md</code> file for guidelines.</p>
+
+  <h2 id="license">License</h2>
+  <p>This project is licensed under the MIT License. See the <code>LICENSE</code> file for details.</p>
 </body>
+
 </html>
