@@ -1,68 +1,51 @@
-# Weather Information API
+# Weather API
 
-Welcome to the Weather Information API!
+This is a simple weather API implemented using Node.js, Express, and TypeScript. It provides weather information for different cities and includes authentication functionality.
 
-## API Endpoint
+## API Endpoints
 
-The API provides weather information for a given city.
+### Authentication
 
-**Endpoint:**
+- `POST /api/auth/register`: Creates a new user.
+- `POST /api/auth/login`: Authenticates a user and returns user info and a JWT token.
 
-GET /api/weather/:city
+### Weather Information
 
+- `GET /api/weather/:city`: Retrieves weather information for a specific city.
 
-**Parameters:**
+### User Management (Protected Routes)
 
-- `:city` - The name of the city for which you want to retrieve weather information.
+The following routes require authentication.
 
-**Example Usage:**
-
-GET /api/weather/london
-
-
-**Example Response:**
-
-```json
-{
-    "data": {
-        "location": {
-            "name": "Manila",
-            "region": "Manila",
-            "country": "Philippines",
-            "localtime": "2023-05-29 0:56"
-        },
-        "current": {
-            "temp_c": 30,
-            "condition": {
-                "text": "Partly cloudy",
-                "icon": "//cdn.weatherapi.com/weather/64x64/night/116.png"
-            }
-        }
-    },
-    "message": "OK",
-    "status": 200
-  }
-```
-
-Please note that the weather information provided is subject to change and may not reflect real-time conditions.
+- `GET /api/users`: Retrieves all users (only accessible to authenticated users).
+- `POST /api/users`: Creates a new user (only accessible to authenticated users).
+- `PUT /api/users/:id`: Updates user information (only accessible to authenticated users).
+- `DELETE /api/users/:id`: Deletes a user (only accessible to authenticated users).
 
 
 ## Getting Started
- 
-To get started with the Weather Information API, follow these steps:
 
-1. Clone the repository: git clone https://github.com/your-username/your-repo.git
-2. Install the dependencies: npm install
-3. Start the server: npm start
-4. Make requests to the API endpoint: http://localhost:3000/api/weather/:city
+1. Clone the repository:
+git clone https://github.com/your-username/your-repo.git
 
-### Customization
+2. Install dependencies:
+npm install
 
-Feel free to customize the API according to your needs. You can add additional features, integrate with different weather providers, or enhance error handling. Remember to update the documentation accordingly if you make any changes.
 
-### Contributing
+3. Set up environment variables:
+- Create a `.env` file in the root directory.
+- Define the following variables in the `.env` file:
+  ```
+  PORT=3000
+  DATABASE_URL=your-database-connection-string
+  JWT_SECRET=your-jwt-secret
+  ```
 
-Contributions are welcome! If you find any issues or have suggestions for improvements, please create a new issue or submit a pull request.
+4. Run the application:
+npm start
 
-### License
-This project is licensed under the MIT License.
+
+The API server will start running on http://localhost:3000.
+
+
+Feel free to explore and modify the code structure according to your needs. If you have any questions or need further assistance, please don't hesitate to ask!

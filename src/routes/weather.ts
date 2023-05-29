@@ -1,11 +1,10 @@
-const express = require('express')
+import express from 'express'
 const router = express.Router()
+import { transformWeatherData } from '../utils'
+import { Request, Response } from 'express'
 import axios, { AxiosError } from 'axios'
-import { transformWeatherData } from '../utils';
-import { Request, Response } from 'express';
-
-const WEATHER_API_KEY = 'b6406bb24a6f438da49151231232805';
-const WEATHER_API_BASE_URL = 'https://api.weatherapi.com/v1';
+const WEATHER_API_KEY = 'b6406bb24a6f438da49151231232805'
+const WEATHER_API_BASE_URL = 'https://api.weatherapi.com/v1'
 const WEATHER_API_CURRENT = '/current.json'
 
 
