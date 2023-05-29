@@ -13,6 +13,14 @@ const port = process.env.PORT || 3000
 
 
 const app = express()
+
+app.get('/', (req, res) => {
+    return res.sendFile(path.join(__dirname, 'views', 'index.html'))
+
+})
+
+
+
 app.use(bodyParser.json())
 
 app.use('/api/auth', AuthRouter)
@@ -43,11 +51,6 @@ app.use((req, res, next) => {
 app.use('/api/weather', weatherRouter)
 app.use('/api/users', usersRouter)
 
-
-app.get('/', (req, res) => {
-    return res.sendFile(path.join(__dirname, 'views', 'index.html'))
-
-})
 
 
 app.listen(port, () => {

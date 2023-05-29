@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run build && node ./build/index.js",
     "start:dev": "npx nodemon",
-    "build": "rimraf ./build && tsc && copyfiles -u 1 src/views/**/*.{html,css} build/",
+    "build": "rimraf ./build && prisma generate && tsc && copyfiles -u 1 src/views/**/*.{html,css} build/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
