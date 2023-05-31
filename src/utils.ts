@@ -27,7 +27,7 @@ export const transformWeatherData = (data: any): WeatherData => {
 }
 
 
-export const createJSONWebToken = (data: Pick<User, 'email' | 'password'>) => {
+export const createJSONWebToken = (data: Pick<User, 'email'>) => {
     if (!process.env.JWT_SECRET) {
         throw new Error('JWT_SECRET not found in .env file');
     }
@@ -53,3 +53,4 @@ export const hashPassword = async (password: string) => {
 export const comparePassword = async (password: string, hashedPassword: string) => {
     return await bcrypt.compare(password, hashedPassword);
 }
+

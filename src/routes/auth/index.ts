@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { prisma } from '../../index'
 import { comparePassword, createJSONWebToken, hashPassword } from '../../utils'
-
+import { generateAPIKey } from '../../lib/apikey'
 const router = Router()
 
 router.post('/login', async (req, res) => {
@@ -34,7 +34,7 @@ router.post('/login', async (req, res) => {
         data: {
             name: user.name,
             email: user.email,
-            token: createJSONWebToken({ email: user.email, password: user.password })
+            token: createJSONWebToken({ email: user.email })
         }
     });
 })
@@ -80,6 +80,8 @@ router.post('/register', async (req, res) => {
         }
     });
 })
+
+    
 
 
 export default router;
