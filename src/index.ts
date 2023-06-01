@@ -1,4 +1,5 @@
 import express from 'express'
+import path from 'path'
 import weatherRouter from './routes/api/weather'
 import usersRouter from './routes/api/user';
 import AuthRouter from './routes/api/auth';
@@ -9,8 +10,6 @@ import { PrismaClient, User } from '@prisma/client';
 import { verifyJSONWebToken } from './utils';
 import session from 'express-session';
 import { generateAPIKey } from './lib/apikey';
-
-
 
 declare global {
     namespace Express {
@@ -37,10 +36,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }))
 
-
-
-
-
 app.use(session({
     secret: process.env.JWT_SECRET || 'jksdajf0jJKLf83rhAcvmsj4324FDJFkfda',
     resave: false,
@@ -55,28 +50,23 @@ app.use(async (req, res, next) => {
     if (!req.session.userId) {
         return next()
     }
-    try {
-        const user = await prisma.user.findUnique({
-            where: {
-                id: req.session.userId
-            },
-            include: {
-                keys: true
-            }
-        })
-        
-        if (!user) {
-            return next()
+    const user = await prisma.user.findUnique({
+        where: {
+            id: req.session.userId
+        },
+        include: {
+            keys: true
         }
-        user.keys = user.keys.filter(key => !key.deleted)
-    
-        res.locals.user = user
-        res.locals.isAuthenticated = true
-        return next()
-    } catch(err) {
-        return res.redirect('auth/login')
-    }
+    })
 
+    if (!user) {
+        return next()
+    }
+    user.keys = user.keys.filter(key => !key.deleted)
+
+    res.locals.user = user
+    res.locals.isAuthenticated = true
+    next()
 })
 
 app.get('/', async (req, res) => {
