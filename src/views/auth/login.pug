@@ -1,0 +1,19 @@
+doctype html
+html(lang='en')
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Weather API
+
+body
+
+    h1 Login
+    form(method="POST" action="/auth/login")
+        input(type="email" name="email" placeholder="email")
+        input(type="password" name="password" placeholder="Password")
+        if error
+            p.error= error
+        input(type="submit" value="Login")
+    p Don't have an account?
+        a(href="/auth/signup") Sign Up
+    p Or go back to
+        a(href="/") Home

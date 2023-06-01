@@ -1,0 +1,18 @@
+
+nav 
+    ul
+        li
+            a(href='/') Panahon API
+        if isAuthenticated 
+            li
+                p Welcome #{user.name}
+            li
+                a(href='/dashboard') Dashboard
+            li
+                form(method="POST" action ="/auth/logout")
+                    input(type="submit" value="Logout")
+        else
+            li
+                a(href='/auth/login') Login
+            li
+                a(href='/auth/signup') Sign Up

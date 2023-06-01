@@ -1,0 +1,35 @@
+doctype html
+html(lang='en')
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Weather API
+
+body
+
+    include nav.pug
+    h1 Dashboard
+
+    p Welcome to the dashboard!
+    if user
+        if user && user.keys && user.keys.length > 0
+            form(action=`/dashboard/${user.id}/keys/regenerate` method="POST")
+                button(type="submit")
+                        | Regenerate API Key
+        else
+            form(action=`/dashboard/${user.id}/keys/generate` method="POST")
+                button(type="submit")
+                    | Generate API Key
+
+        form(action=`/dashboard/${user.id}/keys/delete` method="POST")
+            button(type="submit")
+                | Delete API Key
+
+        if (user && user.keys && user.keys.length > 0)
+            p Your API Key is
+            for key in user.keys
+                p #{key.key}
+        else
+            p You do not have an API Key yet. Generate one now!
+
+    
+    

@@ -1,9 +1,9 @@
 import express from 'express'
 const router = express.Router()
-import { hashPassword, transformWeatherData } from '../utils'
+import { hashPassword, transformWeatherData } from '../../utils'
 import { Request, Response } from 'express'
 import axios, { AxiosError } from 'axios'
-import { prisma } from '..'
+import { prisma } from '../../'
 
 router.get('/', async (req: Request, res: Response) => {
     res.status(400).json({

@@ -1,6 +1,6 @@
 import { Router } from 'express'
 const router = Router()
-import { prisma } from '../index'
+import { prisma } from '../../index'
 
 
 router.get('/', async (req, res) => {
