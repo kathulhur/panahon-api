@@ -1,168 +1,29 @@
 doctype html
 html(lang='en')
-  meta(charset='UTF-8')
-  meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  title Weather API
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title Weather API
 
-body
-  include nav.pug
-  h1 Weather API
+  body
+    include nav.pug
+    h1 PANAHON: A Weather API
 
-  p Simple API for retrieving weather information
+    p This simple weather API allows you to retrieve weather information for a specific city. To use the API, sign up and obtain your API key.
 
-  h2 Table of Contents
-  ul
-    li: a(href='#getting-started') Getting Started
-    li: a(href='#endpoints') Endpoints
-    li: a(href='#contributing') Contributing
-    li: a(href='#license') License
+    h2 API Documentation
 
-  h2#getting-started Getting Started
+    h3 Get Weather Data
+    p To get weather data for a specific city, send a GET request to the following endpoint:
 
-  h3#installation Installation
+    pre GET: /api/weather/:city/?key=YOUR_API_KEY
 
-  p To get started with the Weather API, clone this repository and install the required dependencies:
-  pre
-    code.
-      <strong> git clone https://github.com/kathulhur/panahon-api.git </strong>
-      <strong> cd panahon-api </strong>
-      <strong> npm install </strong>
+    p Replace `:city` in the URL with the name of the city you want to get weather data for. Also, make sure to replace `YOUR_API_KEY` with your actual API key.
 
+    h2 Sign Up and Obtain API Key
 
-  h3#usage Usage
-  ol
-    li Rename the <code>.env.example</code> file to <code>.env</code> and provide the necessary environment variables.</li>
-    li Run the following command to start the API server:
+    p To access the API functionalities, sign up and obtain your API key. Upon signing up, you will be provided with your unique API key.
 
-  pre
-    code npm start 
+    p Use the API key in the URL mentioned above to authenticate your requests and gain access to weather data.
 
-  p By default, the API will be available at <a href="http://localhost:3000">http://localhost:3000</a>.
-
-  h2#endpoints Endpoints
-
-  h3#register Register
-  p Register a new user.
-
-  ul
-    li 
-      strong URL strong : 
-        code /api/auth/register /code 
-    li 
-      strong Method strong : 
-        code POST /code </li>
-    li 
-      strong Request Body:
-
-  pre
-    code.
-      {
-        "name": "exampleuser",
-        "email": "exampleuser@mail.com",
-        "password": "password123"
-      }
-
-  p <strong>Success Response</strong>
-  ul
-    li <strong>Status Code:</strong>: 201 (Created)
-    li <strong>Response Body:</strong>
-
-  pre
-    code.
-      {
-          "message": "Registration successful",
-          "status": 200,
-          "data": {
-              "name": "exampleuser",
-              "email": "exampleuser@mail.com"
-          }
-      }
-
-  h3(id="login") Login
-  p Authenticate and obtain a user token.
-  ul
-    li <strong>URL</strong>: <code>/api/auth/login</code>
-    li <strong>Method</strong>: <code>POST</code>
-    li <strong>Request Body</strong>:
-  ul
-
-  pre
-    code.
-      {
-        "email": "exampleuser@mail.com",
-        "password": "password123"
-      }
-
-
-  p <strong>Success Response</strong>
-
-
-  pre
-    code.
-      {
-          "message": "User logged in successfully",
-          "status": 200,
-          "data": {
-              "name": "exampleuser",
-              "email": "exampleuser@mail.com",
-              "token": "eyJhbGciOiJIUzI1NiIs...Env4MFT2MGyo-TgAVA"
-          }
-      }
-
-
-  h3(id="get-weather") Get Weather
-  p Retrieve weather information for a specific city.
-  ul
-    li <strong>URL</strong>: <code>/api/weather/:city?key=api_key_here</code>
-    li <strong>Method</strong>: <code>GET</code>
-    li <strong>Success Response</strong>:
-
-  pre
-    code.
-      {
-        "data": {
-            "location": {
-                "name": "Manila",
-                "region": "Manila",
-                "country": "Philippines",
-                "localtime": "2023-05-29 16:19"
-            },
-            "current": {
-                "temp_c": 32,
-                "condition": {
-                    "text": "Partly cloudy",
-                    "icon": "//cdn.weatherapi.com/weather/64x64/day/116.png"
-                }
-            }
-        },
-        "message": "OK",
-        "status": 200
-      }
-
-  h3(id="get-users") User Management [Protected Routes]
-  ul
-    li 
-      strong 
-        code GET /api/users:
-      
-      | Retrieves all users (only accessible to admin users).
-
-    li 
-      strong 
-        code POST /api/users: 
-      | Creates a new user (only accessible to admin users).
-
-    li 
-      strong 
-        code PUT /api/users/:id:
-      | Updates user information (only accessible to admin users).
-    li
-      strong 
-        code DELETE /api/users/:id:
-      | Deletes a user (only accessible to admin users).
-
-  h2(id="contributing") Contributing
-  p Contributions are welcome! Please read the <code>CONTRIBUTING.md</code> file for guidelines.
-
-  h2(id="license") License
-  p This project is licensed under the MIT License. See the <code>LICENSE</code> file for details.
+    p Thank you for using our Weather API! If you have any questions or need assistance, please contact our support team.
