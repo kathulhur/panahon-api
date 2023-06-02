@@ -3,6 +3,7 @@ import { prisma } from '../..'
 import { generateAPIKey } from '../../lib/apikey'
 import { isUserAuthenticated } from './auth'
 import axios from 'axios'
+axios.defaults.baseURL = 'http://localhost:3000/api'
 
 const router = Router()
 
@@ -22,9 +23,15 @@ router.get('/', isUserAuthenticated, async (req, res) => {
     if (!apiKey) return res.render('dashboard', { error: 'You need to generate an API key first' })
     
     // TODO: catch error
-    const response = await axios.get(`http://localhost:3000/api/weather/${city}?key=${apiKey.key}`)
+    try {
+        const baseUrl = req.protocol + '://' + req.get('host')
+        const response = await axios.get(baseUrl + `/api/weather/${city}?key=${apiKey.key}`)
+        return res.render('dashboard', { result: JSON.stringify(response.data, null, 4) })
+    } catch (err) {
+        console.log(err)
+    }
 
-    return res.render('dashboard', { result: JSON.stringify(response.data, null, 4) })
+    return res.render('dashboard', { error: 'Something went wrong' })
 
 })
 
