@@ -21,6 +21,12 @@ model User {
   deletedAt DateTime?
   deleted   Boolean   @default(false)
   keys      ApiKey[]
+  role     Role      @default(USER)
+}
+
+enum Role {
+  ADMIN
+  USER
 }
 
 model ApiKey {

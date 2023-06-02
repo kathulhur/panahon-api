@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { prisma } from "..";
-import { comparePassword, hashPassword } from "../utils";
+import { Handler, Router } from "express";
+import { prisma } from "../..";
+import { comparePassword, hashPassword, verifyJSONWebToken } from "../../utils";
 
 declare module 'express-session' {
         interface SessionData {
@@ -68,9 +68,6 @@ router.get('/signup', (req, res) => {
 
 router.post('/signup', async (req, res) => {
     const { name, email, password } = req.body as { name: string, email: string, password: string }
-    console.log(name)
-    console.log(email)
-    console.log(password)
     if (!name || !email || !password) return res.render('/auth/signup', {
         error: 'Invalid email or password'
     })
@@ -86,6 +83,14 @@ router.post('/signup', async (req, res) => {
     
     return res.redirect('/auth/login')
 })
+
+export const isUserAuthenticated: Handler  = async (req, res, next) => {
+    if (!res.locals.isAuthenticated || !res.locals.user) {
+       return res.redirect('/auth/login')
+    }
+
+    return next();
+}
 
 
 

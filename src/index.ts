@@ -1,16 +1,11 @@
 import express from 'express'
-import path from 'path'
-import weatherRouter from './routes/api/weather'
-import usersRouter from './routes/api/user';
-import AuthRouter from './routes/api/auth';
-import ApiKeyRouter from './routes/api/apikey';
-import webAuthRouter from './routes/auth';
+import apiRouter from './routes/api';
+import webAuthRouter from './routes/web/auth';
 import bodyParser from 'body-parser';
 import { PrismaClient, User } from '@prisma/client';
-import { verifyJSONWebToken } from './utils';
 import session from 'express-session';
-import { generateAPIKey } from './lib/apikey';
-
+import dashboardRouter from './routes/web/dashboard';
+import { verifyJSONWebToken } from './utils';
 declare global {
     namespace Express {
         export interface Request {
@@ -18,6 +13,8 @@ declare global {
         }
         export interface Locals {
             user?: User;
+            isAuthenticated?: boolean;
+            isAdmin?: boolean;
         }
     }
 }
@@ -44,162 +41,36 @@ app.use(session({
 
 }))
 
-
-
 app.use(async (req, res, next) => {
-    if (!req.session.userId) {
-        return next()
-    }
-    const user = await prisma.user.findUnique({
-        where: {
-            id: req.session.userId
-        },
-        include: {
-            keys: true
+    if (req.session.userId) {// if session exists, get user from db
+        const user = await prisma.user.findUnique({
+            where: {
+                id: req.session.userId
+            },
+            include: {
+                keys: true
+            }
+        })
+
+        if (!user) {
+            return next()
         }
-    })
+        user.keys = user.keys.filter(key => !key.deleted)
 
-    if (!user) {
+        res.locals.user = user
+        res.locals.isAuthenticated = true
         return next()
     }
-    user.keys = user.keys.filter(key => !key.deleted)
-
-    res.locals.user = user
-    res.locals.isAuthenticated = true
-    next()
+    return next();
 })
 
 app.get('/', async (req, res) => {
     return res.render('index')
 
 })
-
-app.get('/dashboard', async (req, res) => {
-    if (!res.locals.isAuthenticated) return res.redirect('/auth/login')
-    return res.render('dashboard')
-
-})
-
-app.post('/dashboard/:userId/keys/generate', async (req, res) => {
-    if (!res.locals.isAuthenticated || !res.locals.user) return res.redirect('/auth/login')
-    
-    const storedApiKey = await prisma.apiKey.findUnique({
-        where: {
-            userId: res.locals.user.id
-        }
-    })
-
-    if (storedApiKey) {
-        const updatedKey = await prisma.apiKey.update({
-            where: {
-                userId: res.locals.user.id
-            },
-            data: {
-                key:  generateAPIKey(),
-                deleted: false,
-            }
-        })
-        return res.redirect('/dashboard')
-    }
-    
-
-    const newAPIKey = await prisma.apiKey.create({
-        data: {
-            key: generateAPIKey(),
-            user: {
-                connect: {
-                    id: res.locals.user.id
-                }
-            }
-
-        },
-    })
-
-    return res.redirect('/dashboard')
-})
-
-
-
-app.post('/dashboard/:userId/keys/regenerate', async (req, res) => {
-    if (!res.locals.isAuthenticated || !res.locals.user) return res.redirect('/auth/login')
-    
-    const updatedKey = await prisma.apiKey.update({
-        where: {
-            userId: res.locals.user.id
-        },
-        data: {
-            key:  generateAPIKey(),
-        }
-    })
-
-    return res.redirect('/dashboard')
-})
-
-app.post('/dashboard/:userId/keys/delete', async (req, res) => {
-    if (!res.locals.isAuthenticated || !res.locals.user) return res.redirect('/auth/login')
-    
-    const deletedApiKey = await prisma.apiKey.update({
-        where: {
-            userId: res.locals.user.id
-        },
-        data: {
-            deleted: true,
-            deletedAt: new Date()
-        }
-    })
-
-    return res.redirect('/dashboard')
-})
-
-
-
-
 app.use('/auth', webAuthRouter)
-
-
-app.use('/api/auth', AuthRouter)
-app.use('/api/weather', weatherRouter)
-
-app.use( async (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
-
-    if (!token) {
-        return res.status(401).json({
-            message: "Unauthorized",
-            status: 401,
-        });
-    }
-
-    try {
-        const tokenData = verifyJSONWebToken(token);
-        const { email } = tokenData as  { email: string };
-        const user = await prisma.user.findUnique({
-            where: {
-                email
-            }
-        })
-        if (!user) {
-            return res.status(401).json({
-                message: "Unauthorized",
-                status: 401,
-            });
-        }
-        req.user = user;
-
-    } catch (error) {
-        return res.status(401).json({
-            message: "Unauthorized",
-            status: 401,
-        });
-    }
-
-    
-    next();
-
-})
-app.use('/api/users', usersRouter)
-app.use('/api/keys', ApiKeyRouter)
-
+app.use('/dashboard', dashboardRouter)
+app.use('/api', apiRouter)
 
 
 app.listen(port, () => {

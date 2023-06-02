@@ -1,9 +1,12 @@
 import { Router } from 'express'
-const router = Router()
 import { prisma } from '../../index'
+import { isUserAdmin } from './auth'
+const router = Router()
 
 
-router.get('/', async (req, res) => {
+
+router.get('/', isUserAdmin, async (req, res) => {
+    
     const users = await prisma.user.findMany({
         where : {
             deleted: false
@@ -18,7 +21,7 @@ router.get('/', async (req, res) => {
 })
 
 
-router.post('/', async (req, res) => {
+router.post('/', isUserAdmin, async (req, res) => {
     const { name, email, password } = req.body;
     const user = await prisma.user.create({
         data: {
@@ -38,7 +41,7 @@ router.post('/', async (req, res) => {
     });
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', isUserAdmin, async (req, res) => {
     const { id } = req.params;
     const { name, email, password } = req.body;
 
@@ -64,7 +67,7 @@ router.put('/:id', async (req, res) => {
 })
 
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', isUserAdmin, async (req, res) => {
     const { id } = req.params;
     const user = await prisma.user.update({
         where: {

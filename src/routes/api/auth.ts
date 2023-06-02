@@ -1,7 +1,8 @@
-import { Router } from 'express'
-import { prisma } from '../../../index'
-import { comparePassword, createJSONWebToken, hashPassword } from '../../../utils'
+import { Handler, Router } from 'express'
+import { prisma } from '../../index'
+import { comparePassword, createJSONWebToken, hashPassword } from '../../utils'
 const router = Router()
+
 
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
@@ -31,8 +32,8 @@ router.post('/login', async (req, res) => {
         message: "User logged in successfully",
         status: 200,
         data: {
+            id: user.id,
             name: user.name,
-            email: user.email,
             token: createJSONWebToken({ email: user.email })
         }
     });
@@ -79,6 +80,21 @@ router.post('/register', async (req, res) => {
         }
     });
 })
+
+
+export const isUserAdmin: Handler = async (req, res, next) => {
+    console.log('isUserAdmin')
+    if (!res.locals.isAdmin) {
+        return res.json({
+            message: "Unauthorized",
+            status: 401,    
+        });
+    }
+
+    return next();
+}
+
+        
 
     
 

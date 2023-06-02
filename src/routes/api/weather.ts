@@ -5,13 +5,13 @@ import { Request, Response } from 'express'
 import axios, { AxiosError } from 'axios'
 import { prisma } from '../../'
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (req, res) => {
     res.status(400).json({
         message: 'Bad request. Missing city query parameter'
     });
     return;
-
 });
+
 
 router.get('/:city', async (req: Request, res: Response) => {
     const { city } = req.params;

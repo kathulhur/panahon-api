@@ -1,11 +1,16 @@
 
-import { Router } from 'express';
+import { Handler, Router } from 'express';
 import { prisma } from '../../index';
 import { generateAPIKey } from '../../lib/apikey';
+import { isUserAdmin } from './auth';
+
+// TODO: Find library for short circuiting handlers
+
 const router = Router();
 
-router.get('/', async (req, res) => {
-    if (!req.user) {
+router.get('/', isUserAdmin,  async (req, res) => {
+    console.log('get api keys')
+    if (!res.locals.user) {
         return res.json({
             message: "Unauthorized",
             status: 401,
@@ -14,7 +19,7 @@ router.get('/', async (req, res) => {
 
     const apiKeys = await prisma.apiKey.findMany({
         where: {
-            userId: req.user.id
+            userId: res.locals.user.id
         }
     })
     
@@ -26,16 +31,20 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/:id', async (req, res) => {
-    if (!req.user) {
+    const { id } = req.params;
+
+    if (!res.locals.user) {
         return res.json({
             message: "Unauthorized",
             status: 401,
         });
     }
 
+    
+
     const apiKey = await prisma.apiKey.findUnique({
         where: {
-            userId: req.user.id
+            key: id
         }
     })
 
@@ -59,13 +68,26 @@ router.get('/:id', async (req, res) => {
 
 
 router.post('/', async (req, res) => {
-    if (!req.user) {
+    if (!res.locals.user) {
         return res.json({
-            message: "User not found",
-            status: 404,
+            message: "Unauthorized",
+            status: 401,
         });
     }
-    
+
+    const storedApiKey = await prisma.apiKey.findUnique({
+        where: {
+            userId: res.locals.user.id
+        }
+    })
+
+    if (storedApiKey) {
+        return res.json({
+            message: "API key already exists",
+            status: 409,
+        });
+    }
+
     const generatedApiKey = generateAPIKey();
     
     const newApiKey = await prisma.apiKey.create({
@@ -73,7 +95,7 @@ router.post('/', async (req, res) => {
             key: generatedApiKey,
             user: {
                 connect: {
-                    id: req.user.id
+                    id: res.locals.user.id
                 }
             }
         }
@@ -93,18 +115,19 @@ router.post('/', async (req, res) => {
 })
 
 
-router.put('/', async (req, res) => {
+router.put('/:id', async (req, res) => {
 
-    if (!req.user) {
+    if (!res.locals.user) {
         return res.json({
             message: "Unauthorized",
             status: 401,
         });
     }
 
+
     const apiKey = await prisma.apiKey.findUnique({
         where: {
-            userId: req.user.id
+            id: req.params.id
         }
     })
 
@@ -120,7 +143,7 @@ router.put('/', async (req, res) => {
     
     const newApiKey = await prisma.apiKey.update({
         where: {
-            userId: req.user.id
+            id: req.params.id
         },
         data: {
             key: generatedApiKey,
@@ -142,7 +165,7 @@ router.put('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     
-    if (!req.user) {
+    if (!res.locals.user) {
         return res.json({
             message: "Unauthorized",
             status: 401,
@@ -151,10 +174,10 @@ router.delete('/:id', async (req, res) => {
 
     const apiKey = await prisma.apiKey.findUnique({
         where: {
-            userId: req.user.id
+            id: req.params.id
         }
     })
-
+    
     if (!apiKey) {
         return res.json({
             message: "API key not found",
@@ -163,12 +186,9 @@ router.delete('/:id', async (req, res) => {
     }
 
 
-    await prisma.apiKey.update({
+    await prisma.apiKey.delete({
         where: {
-            userId: req.user.id
-        },
-        data: {
-            deletedAt: new Date()
+            id: req.params.id
         }
     })
 
@@ -179,13 +199,6 @@ router.delete('/:id', async (req, res) => {
 
 })
     
-function getApiPrefix(apiKey: string) {
-    const dotIndex = apiKey.indexOf('.');
-    if (dotIndex !== -1) {
-      return apiKey.slice(0, dotIndex);
-    }
-    return apiKey;
-}
 
 
 export default router;

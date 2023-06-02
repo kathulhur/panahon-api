@@ -12,17 +12,20 @@ body
     p Welcome to the dashboard!
     if user
         if user && user.keys && user.keys.length > 0
-            form(action=`/dashboard/${user.id}/keys/regenerate` method="POST")
+            form(action=`/dashboard/${user.id}/key/regenerate` method="POST")
                 button(type="submit")
                         | Regenerate API Key
+            form(action=`/dashboard/${user.id}/key/delete` method="POST")
+                button(type="submit")
+                    | Delete API Key
+
+            
+
+
         else
-            form(action=`/dashboard/${user.id}/keys/generate` method="POST")
+            form(action=`/dashboard/${user.id}/key/generate` method="POST")
                 button(type="submit")
                     | Generate API Key
-
-        form(action=`/dashboard/${user.id}/keys/delete` method="POST")
-            button(type="submit")
-                | Delete API Key
 
         if (user && user.keys && user.keys.length > 0)
             p Your API Key is
@@ -31,5 +34,18 @@ body
         else
             p You do not have an API Key yet. Generate one now!
 
+
     
+        h2 Test your API Key
+        p Enter a city name to test your API Key
+        p GET: /api/weather/:city/?key=YOUR_API_KEY
+
+        form(action="/dashboard" method="GET")
+            input(type="text" name="city" placeholder="City Name")
+            button(type="submit") Test API
+
+        if result
+            pre= result
+        if error
+            p= error
     
