@@ -22,7 +22,6 @@ router.get('/', isUserAuthenticated, async (req, res) => {
 
     if (!apiKey) return res.render('dashboard', { error: 'You need to generate an API key first' })
     
-    // TODO: catch error
     try {
         const baseUrl = req.protocol + '://' + req.get('host')
         const response = await axios.get(baseUrl + `/api/weather/${city}?key=${apiKey.key}`)

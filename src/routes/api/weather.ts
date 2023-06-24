@@ -1,23 +1,23 @@
 import express from 'express'
-const router = express.Router()
-import { hashPassword, transformWeatherData } from '../../utils'
 import { Request, Response } from 'express'
 import axios, { AxiosError } from 'axios'
 import { prisma } from '../../'
+import { filterForecastObject } from '../../utils'
+const router = express.Router()
 
 router.get('/', async (req, res) => {
-    res.status(400).json({
-        message: 'Bad request. Missing city query parameter'
+    return res.status(400).json({
+        message: 'Bad request. Invalid endpoint. Please refer to the documentation'
     });
-    return;
 });
 
 
-router.get('/:city', async (req: Request, res: Response) => {
-    const { city } = req.params;
-    const { key } = req.query;
+router.get('/forecast/3/:location', async (req, res) => {
+    console.log('/forecast/3/:location')
 
-    if (!city) {
+    const { location } = req.params;
+    const { key } = req.query;
+    if (!location) {
         res.status(400).json({
             message: 'Missing city query parameter'
         });
@@ -47,18 +47,18 @@ router.get('/:city', async (req: Request, res: Response) => {
 
     if (!apiKey) {
         res.status(401).json({
-            message: 'Unauthorized',
+            message: 'missing key query parameter',
             status: 401
         });
         return;
     }
 
     const WEATHER_API_KEY = process.env.WEATHER_API_KEY
-    const WEATHER_API_BASE_URL = process.env.WEATHER_API_BASE_URL
 
+    const url = `https://api.weatherapi.com/v1/forecast.json?key=${WEATHER_API_KEY}&q=${location}&days=7&aqi=no&alerts=no`
     try {
-        const response = await axios.get(`${WEATHER_API_BASE_URL}?key=${WEATHER_API_KEY}&q=${city}`);
-        const responseData = transformWeatherData(response.data);
+        const response = await axios.get(url);
+        const responseData = filterForecastObject(response.data);
         res.json({
             data: responseData,
             message: response.statusText,
@@ -72,7 +72,6 @@ router.get('/:city', async (req: Request, res: Response) => {
             message: error.message
         });
     }
-    
 });
 
 export default router;

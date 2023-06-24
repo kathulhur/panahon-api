@@ -1,30 +1,49 @@
 // Description: This file contains all the utility functions used in the application.
 
 import { User } from "@prisma/client";
-import { WeatherData } from "./types";
+import { Location, Forecastday, WeatherAPIResponseObject,} from "./types";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-export const transformWeatherData = (data: any): WeatherData => {
-    const { location, current } = data;
-    const { name, region, country, localtime } = location;
-    const { temp_c, condition } = current;
+
+export const filterForecastObject = (data: WeatherAPIResponseObject) => {
     return {
-        location: {
-            name,
-            region,
-            country,
-            localtime
-        },
-        current: {
-            temp_c,
-            condition: {
-                text: condition.text,
-                icon: condition.icon
-            }
-        }
+        location: filterLocationField(data.location),
+        forecast: filterForecastField(data.forecast.forecastday)
     }
 }
+
+export const filterLocationField = (location: Location) => {
+    const { name, region, country, localtime } = location
+    return {
+        name,
+        region,
+        country,
+        localtime
+    }
+}
+
+export const filterForecastField = (forecastday: Forecastday[]) => {
+    const transformedData = forecastday.map((day) => {
+        const { date, day: dayData } = day;
+        const { avgtemp_c, avgtemp_f, condition } = dayData;
+        const largerIcon = condition.icon.replace('64x64', '128x128');
+        return {
+            date,
+            day: {
+                avgTempC: avgtemp_c,
+                avgTempF: avgtemp_f,
+                condition: {
+                    text: condition.text,
+                    icon: largerIcon
+                }
+            }
+        }
+
+    })
+    return transformedData;
+}
+
 
 
 export const createJSONWebToken = (data: Pick<User, 'email'>) => {

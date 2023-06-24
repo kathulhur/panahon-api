@@ -5,7 +5,8 @@ import bodyParser from 'body-parser';
 import { PrismaClient, User } from '@prisma/client';
 import session from 'express-session';
 import dashboardRouter from './routes/web/dashboard';
-import { verifyJSONWebToken } from './utils';
+import cors from 'cors'
+
 declare global {
     namespace Express {
         export interface Request {
@@ -22,16 +23,24 @@ declare global {
 
 export const prisma = new PrismaClient();
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 5000
 
 
 const app = express()
 app.set('views', './src/views')
 app.set('view engine', 'pug')
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({
+app.use(express.json())
+app.use(express.urlencoded({
     extended: true
 }))
+
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true,
+    optionsSuccessStatus: 200
+}
+
+app.use(cors(corsOptions))
 
 app.use(session({
     secret: process.env.JWT_SECRET || 'jksdajf0jJKLf83rhAcvmsj4324FDJFkfda',
