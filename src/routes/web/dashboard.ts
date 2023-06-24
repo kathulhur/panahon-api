@@ -3,7 +3,6 @@ import { prisma } from '../..'
 import { generateAPIKey } from '../../lib/apikey'
 import { isUserAuthenticated } from './auth'
 import axios from 'axios'
-axios.defaults.baseURL = 'http://localhost:3000/api'
 
 const router = Router()
 
@@ -11,8 +10,8 @@ const router = Router()
 router.get('/', isUserAuthenticated, async (req, res) => {
     if (!res.locals.user) return res.redirect('/auth/login')
     
-    const { city } = req.query;
-    if (!city) return res.render('dashboard')
+    const { location } = req.query;
+    if (!location) return res.render('dashboard')
 
     const apiKey = await prisma.apiKey.findUnique({
         where: {
@@ -24,7 +23,7 @@ router.get('/', isUserAuthenticated, async (req, res) => {
     
     try {
         const baseUrl = req.protocol + '://' + req.get('host')
-        const response = await axios.get(baseUrl + `/api/weather/${city}?key=${apiKey.key}`)
+        const response = await axios.get(baseUrl + `/api/weather/forecast/3/${location}?key=${apiKey.key}`)
         return res.render('dashboard', { result: JSON.stringify(response.data, null, 4) })
     } catch (err) {
         console.log(err)
