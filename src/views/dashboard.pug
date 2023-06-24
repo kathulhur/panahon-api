@@ -38,10 +38,10 @@ body
     
         h2 Test your API Key
         p Enter a city name to test your API Key
-        p GET: /api/weather/:city/?key=YOUR_API_KEY
+        p GET: /api/weather/forecast/3/:location/?key=YOUR_API_KEY
 
         form(action="/dashboard" method="GET")
-            input(type="text" name="city" placeholder="City Name")
+            input(type="text" name="location" placeholder="enter a location")
             button(type="submit") Test API
 
         if result
