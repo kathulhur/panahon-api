@@ -24,15 +24,18 @@ export const filterLocationField = (location: Location) => {
 }
 
 export const filterForecastField = (forecastday: Forecastday[]) => {
-    const transformedData = forecastday.map((day) => {
-        const { date, day: dayData } = day;
-        const { avgtemp_c, avgtemp_f, condition } = dayData;
+    const transformedData = forecastday.map((forecast) => {
+        const { date, day } = forecast
+
+        const { avgtemp_c, avgtemp_f, condition, daily_chance_of_rain, daily_will_it_rain } = day;
         const largerIcon = condition.icon.replace('64x64', '128x128');
         return {
             date,
             day: {
                 avgTempC: avgtemp_c,
                 avgTempF: avgtemp_f,
+                dailyChanceOfRain: daily_chance_of_rain,
+                dailyWillItRain: daily_will_it_rain,
                 condition: {
                     text: condition.text,
                     icon: largerIcon
