@@ -35,7 +35,7 @@ app.use(express.urlencoded({
 }))
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', "https://panahon.onrender.com"],
     credentials: true,
     optionsSuccessStatus: 200
 }
