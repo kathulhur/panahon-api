@@ -34,13 +34,8 @@ app.use(express.urlencoded({
     extended: true
 }))
 
-const corsOptions = {
-    origin: ['http://localhost:3000', "https://panahon-client.vercel.app/"],
-    credentials: true,
-    optionsSuccessStatus: 200
-}
 
-app.use(cors(corsOptions))
+app.use(cors())
 
 app.use(session({
     secret: process.env.JWT_SECRET || 'jksdajf0jJKLf83rhAcvmsj4324FDJFkfda',
